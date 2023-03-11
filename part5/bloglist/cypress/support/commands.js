@@ -1,21 +1,23 @@
+const storageKey = 'loggedBlogappUser'
+
 Cypress.Commands.add('login', ({ username, password }) => {
-  cy.request('POST',  `${Cypress.env('BACKEND')}/login`, {
+  cy.request('POST', 'http://localhost:3001/api/login', {
     username, password
   }).then(({ body }) => {
-    localStorage.setItem('loggedNoteappUser', JSON.stringify(body))
-    cy.visit('')
+    localStorage.setItem(storageKey, JSON.stringify(body))
+    cy.visit('http://localhost:3000')
   })
 })
 
-Cypress.Commands.add('createNote', ({ content, important }) => {
+Cypress.Commands.add('createBlog', ({ title, author, url }) => {
   cy.request({
-    url: `${Cypress.env('BACKEND')}/notes`,
+    url: 'http://localhost:3001/api/blogs',
     method: 'POST',
-    body: { content, important },
+    body: { title, author, url },
     headers: {
-      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedNoteappUser')).token}`
+      'Authorization': `bearer ${JSON.parse(localStorage.getItem(storageKey)).token}`
     }
   })
 
-  cy.visit('')
+  cy.visit('http://localhost:3000')
 })

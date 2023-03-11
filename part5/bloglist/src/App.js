@@ -1,40 +1,36 @@
-import { useState, useEffect, useRef } from 'react'
-import Note from './components/Note'
+import React, { useState, useEffect } from 'react'
+import Blog from './components/Blog'
 import Notification from './components/Notification'
-import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
-import NoteForm from './components/NoteForm'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import noteService from './services/notes'
+import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
-  const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
-
+  const [allBlogs, setAllBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
-    noteService
-      .getAll()
-      .then(initialNotes => {
-        setNotes(initialNotes)
-      })
-  }, [])
+  const blogFormRef = React.createRef()
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      noteService.setToken(user.token)
+      blogService.setToken(user.token)
+      getAllBlogs()
     }
   }, [])
 
-  const noteFormRef = useRef()
+  const getAllBlogs = async () => {
+    const blogs = await blogService.getAll()
+    setAllBlogs(blogs)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -42,95 +38,132 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      noteService.setToken(user.token)
+
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       )
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('Wrong credentials')
+      setSuccessMessage(null)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     }
   }
 
-  const addNote = (noteObject) => {
-    noteService
-      .create(noteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        noteFormRef.current.toggleVisibility()
-      })
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
-  const notesToShow = showAll
-    ? notes
-    : notes.filter(note => note.important)
+  const createBlog = async (BlogToAdd) => {
+    try {
+      blogFormRef.current.toggleVisibility()
+      const createdBlog = await blogService
+        .create(BlogToAdd)
+      setSuccessMessage(
+        `Blog ${BlogToAdd.title} was successfully added`
+      )
+      setAllBlogs(allBlogs.concat(createdBlog))
+      setErrorMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch(exception) {
+      setErrorMessage(
+        `Cannot add blog ${BlogToAdd.title}`
+      )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
+  }
 
-  const toggleImportanceOf = id => {
-    const note = notes.find(n => n.id === id)
-    const changedNote = { ...note, important: !note.important }
+  const updateBlog = async (BlogToUpdate) => {
+    try {
+      const updatedBlog = await blogService
+        .update(BlogToUpdate)
+      setSuccessMessage(
+        `Blog ${BlogToUpdate.title} was successfully updated`
+      )
+      setAllBlogs(allBlogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog))
+      setErrorMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch(exception) {
+      setErrorMessage(
+        `Cannot update blog ${BlogToUpdate.title}`
+      )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
+  }
 
-    noteService
-      .update(id, changedNote).then(returnedNote => {
-        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
-      })
-      .catch(() => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
+  const deleteBlog = async (BlogToDelete) => {
+    try {
+      if (window.confirm(`Delete ${BlogToDelete.title} ?`)) {
+        blogService
+          .remove(BlogToDelete.id)
+        setSuccessMessage(
+          `Blog ${BlogToDelete.title} was successfully deleted`
         )
+        setAllBlogs(allBlogs.filter(blog => blog.id !== BlogToDelete.id))
+        setErrorMessage(null)
         setTimeout(() => {
-          setErrorMessage(null)
+          setSuccessMessage(null)
         }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
-      })
+      }
+    } catch(exception) {
+      setErrorMessage(
+        `Cannot delete blog ${BlogToDelete.title}`
+      )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
   }
+
+  const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (
     <div>
-      <h1>Notes app</h1>
-
-      <Notification message={errorMessage} />
-
-      {!user &&
-        <Togglable buttonLabel="log in">
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
-      }
-      {user &&
+      <h2>Blogs</h2>
+      <Notification errorMessage={errorMessage} successMessage={successMessage} />
+      {user === null ?
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          password={password}
+        /> :
         <div>
-          <p>{user.name} logged in</p>
-          <Togglable buttonLabel="new note" ref={noteFormRef}>
-            <NoteForm createNote={addNote} />
+          <p>{user.name} logged in<button onClick={handleLogout} type="submit">logout</button></p>
+          <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
+            <BlogForm
+              createBlog={createBlog}
+            />
           </Togglable>
+          {allBlogs.sort(byLikes).map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog}
+            />
+          )}
         </div>
       }
-
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map(note =>
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        )}
-      </ul>
-
-      <Footer />
     </div>
   )
 }
