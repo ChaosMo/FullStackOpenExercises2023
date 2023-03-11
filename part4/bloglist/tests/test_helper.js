@@ -1,28 +1,26 @@
-const Note = require('../models/note')
+const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const initialNotes = [
-  {
-    content: 'HTML is easy',
-    important: false
-  },
-  {
-    content: 'Browser can execute only JavaScript',
-    important: true
-  }
-]
+const initialBlogs = [
+    {
+      id:"5a422a851b54a676234d17f7",
+      title:"React patterns",
+      author:"Michael Chan",
+      url:"https://reactpatterns.com/",
+      likes:7
+    },
+    {
+      id:"5a422aa71b54a676234d17f8",
+      title:"Go To Statement Considered Harmful",
+      author:"Edsger W. Dijkstra",
+      url:"http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+      likes:5
+    }
+  ]
 
-const nonExistingId = async () => {
-  const note = new Note({ content: 'willremovethissoon' })
-  await note.save()
-  await note.remove()
-
-  return note._id.toString()
-}
-
-const notesInDb = async () => {
-  const notes = await Note.find({})
-  return notes.map(note => note.toJSON())
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
 }
 
 const usersInDb = async () => {
@@ -31,8 +29,5 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialNotes,
-  nonExistingId,
-  notesInDb,
-  usersInDb,
+    initialBlogs, blogsInDb, usersInDb
 }
