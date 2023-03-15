@@ -14,7 +14,7 @@ const mongoose = require('mongoose')
 
 const url = config.MONGODB_URI
 logger.info('connecting to', url)
-
+mongoose.set('strictQuery', true)
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     logger.info('connected to MongoDB')
