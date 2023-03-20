@@ -1,6 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import PropTypes from 'prop-types'
 
+//5.5 Blog list frontend, step5
 const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
 

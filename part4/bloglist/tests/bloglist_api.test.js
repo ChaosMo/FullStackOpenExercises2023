@@ -49,24 +49,26 @@ describe('Get blog information', () => {
       .expect('Content-Type', /application\/json/)
   })
 
+  //4.8: Blog list tests, step1
   test('there are two blogs', async () => {
     const response = await api
-                        .get('/api/blogs')
-                        .set(headers)
+      .get('/api/blogs')
+      .set(headers)
 
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
   test('the first blog is about React patterns', async () => {
     const response = await api
-                      .get('/api/blogs')
-                      .set(headers)
+      .get('/api/blogs')
+      .set(headers)
 
     const contents = response.body.map(r => r.title)
 
     expect(contents).toContain('React patterns')
   })
 
+  //4.9*: Blog list tests, step2
   test('The unique identifier property of the blog posts is by default _id', async () => {
     const blogs = await Blog.find({})
     expect(blogs[0]._id).toBeDefined()
@@ -96,6 +98,7 @@ describe('Addition of a new blog', () => {
     }
   })
 
+  //4.10: Blog list tests, step3
   test('A valid blog can be added ', async () => {
     const newBlog = {
       title:"Canonical string reduction",
@@ -120,6 +123,7 @@ describe('Addition of a new blog', () => {
     )
   })
 
+  //4.12*: Blog list tests, step5
   test('If title and url are missing, respond with 400 bad request', async () => {
     const newBlog = {
       author:"Edsger W. Dijkstra",
@@ -137,6 +141,7 @@ describe('Addition of a new blog', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
 
+  //4.11*: Blog list tests, step4
   test('If the likes property is missing, it will default to 0 ', async () => {
     const newBlog = {
       title:"First class tests",
@@ -155,8 +160,11 @@ describe('Addition of a new blog', () => {
     const addedBlog = await blogsAtEnd.find(blog => blog.title === "First class tests")
     expect(addedBlog.likes).toBe(0)
   })
+
+  //4.23*: bloglist expansion, step11
 })
 
+//4.14 Blog list expansions, step2
 describe('Update a blog', () => {
   let headers
 
@@ -217,6 +225,7 @@ describe('Update a blog', () => {
   })
 })
 
+//4.13 Blog list expansions, step1
 describe('Deletion of a blog', () => {
   let headers
 

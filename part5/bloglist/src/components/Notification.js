@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+//5.4: bloglist frontend, step4
 const error = {
   color: 'red',
   background: 'lightgrey',

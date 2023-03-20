@@ -2,9 +2,11 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 
+//4.15: bloglist expansion, step3
 usersRouter.post('/', async (request, response) => {
   const body = request.body
 
+  //4.16*: bloglist expansion, step4
   if (body.password.length < 3) {
     return response.status(400).json({ error: `User validation failed: username: Path password is shorter than the minimum allowed length (3)` })
   }

@@ -1,55 +1,25 @@
-import { useState } from 'react'
-
-const Button = ({ handleClick, text }) => (  
-  <button onClick={handleClick}>    
-    {text}
-  </button>
-)
-
-const anecdotes = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
-  'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
-]
+import React, {useEffect} from 'react'
+import NewAnecdote from './components/AnecdoteForm'
+import AnecdoteList from './components/AnecdoteList'
+import Notification from './components/Notification'
+import Filter from './components/Filter'
+import { initializeAnecdotes } from './reducers/anecdoteReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
-
-  const [selected, setSelected] = useState(0)
-  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
-  const [mostVoted, setMostVoted] = useState(0);
-
-  const handleRandomNextClick = () => {
-    setSelected(Math.floor(Math.random() * anecdotes.length));
-  }
-  const handleVoteClick = () => {
-    const copy = {
-      ...points,
-      [selected]:points[selected]+1
-    };
-    setPoints(copy);
-    if (copy[selected] > copy[mostVoted]) {
-      setMostVoted(selected);
-    }
-  };
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(initializeAnecdotes())
+  }, [dispatch])
 
   return (
     <div>
-      <h1>Anecdote of the day</h1>
-      {anecdotes[selected]}
-      <br />
-      has {points[selected]} points
-      <br />
-      <Button handleClick={handleVoteClick} text="vote" />
-      <Button handleClick={handleRandomNextClick} text="next anecdote" />
-      <br />
-      <h1>Anecdote with most votes</h1>
-      {anecdotes[mostVoted]}
-      <br />
-      has {points[mostVoted]} points
+      <h2>create new</h2>
+      <NewAnecdote />
+      <h2>Anecdotes</h2>
+      <Notification />
+      <Filter />
+      <AnecdoteList />
     </div>
   )
 }

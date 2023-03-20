@@ -10,6 +10,7 @@ const favoriteBlog = (blogs) => {
     : blogs.reduce((maxLikes, blog) => blog.likes > maxLikes ? blog.likes : maxLikes, blogs[0].likes)
 }
 
+//4.6*: helper functions and unit tests, step4
 const mostBlogs = (blogs) => {
   if (blogs.length === 0) {
     return {}
@@ -27,6 +28,7 @@ const mostBlogs = (blogs) => {
   }
 }
 
+//4.7*: helper functions and unit tests, step5
 const mostLikes = (blogs) => {
   if (blogs.length === 0) {
     return {}
@@ -43,7 +45,10 @@ const mostLikes = (blogs) => {
     }
   }
 }
+const dummy = (blogs) => {
+  return 1
+}
 
 module.exports = {
-  totalLikes, favoriteBlog, mostBlogs, mostLikes
+  totalLikes, favoriteBlog, mostBlogs, mostLikes, dummy
 }

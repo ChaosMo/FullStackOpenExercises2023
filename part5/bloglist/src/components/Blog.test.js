@@ -14,6 +14,7 @@ describe('Blog component tests', () => {
   let mockUpdateBlog = jest.fn()
   let mockDeleteBlog = jest.fn()
 
+  //5.13: Blog list tests, step1
   test('renders title and author', () => {
     const component = render(
       <Blog blog={blog} updateBlog={mockUpdateBlog} deleteBlog={mockDeleteBlog} />
@@ -23,6 +24,7 @@ describe('Blog component tests', () => {
     )
   })
 
+  //5.14: Blog list tests, step2
   test('clicking the view button displays url and number of likes', () => {
     const component = render(
       <Blog blog={blog} updateBlog={mockUpdateBlog} deleteBlog={mockDeleteBlog} />
@@ -39,4 +41,7 @@ describe('Blog component tests', () => {
       '7'
     )
   })
+  //5.15: Blog list tests, step3
+
+  //5.16: Blog list tests, step4
 })

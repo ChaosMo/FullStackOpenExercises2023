@@ -4,11 +4,13 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+//4.17: bloglist expansion, step5
 blogRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
     response.json(blogs.map(blog => blog.toJSON()))
   })
 
+//4.19: bloglist expansion, step7
 blogRouter.post('/', async (request, response, next) => {
     const body = request.body
 
@@ -46,6 +48,7 @@ blogRouter.post('/', async (request, response, next) => {
     }
 })
 
+//4.21*: bloglist expansion, step9
 blogRouter.delete('/:id', async (request, response, next) => {
     const token = request.token
     const decodedToken = jwt.verify(token, process.env.SECRET)

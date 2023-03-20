@@ -11,8 +11,10 @@ const Blog = (props) => {
     setVisible(!visible)
   }
 
+  //5.7* Blog list frontend, step7
   const buttonLabel = visible ? 'hide' : 'view'
 
+  //5.8: Blog list frontend, step8
   const increaseLikes = () => {
     const updatedBlog = ({
       ...blog,
@@ -22,6 +24,7 @@ const Blog = (props) => {
     setBlogObject(updatedBlog)
   }
 
+  //5.10: Blog list frontend, step10
   const removeBlog = () => props.deleteBlog(blog)
 
   const blogStyle = {
@@ -46,6 +49,7 @@ const Blog = (props) => {
   )
 }
 
+//5.11: Blog list frontend, step11
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   updateBlog: PropTypes.func.isRequired,

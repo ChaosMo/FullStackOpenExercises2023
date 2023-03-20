@@ -45,6 +45,14 @@ const blogs = [
     }
 ]
 
+//4.3: helper functions and unit tests, step1
+test('dummy returns one', () => {
+    const blogs = []
+    const result = listHelper.dummy(blogs)
+    expect(result).toBe(1)
+  })
+
+//4.4: helper functions and unit tests, step2
 describe('Total likes', () => {
     test('of empty list is zero', () => {
         const resultEmptyBlogList = listHelper.totalLikes([])
@@ -63,6 +71,7 @@ describe('Total likes', () => {
     })
   })
 
+//4.5*: helper functions and unit tests, step3
 describe('Favorite blog', () => {
     test('of empty list is {}', () => {
         const resultEmptyBlogList = listHelper.favoriteBlog([])

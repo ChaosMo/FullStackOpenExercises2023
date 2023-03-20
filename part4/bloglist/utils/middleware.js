@@ -30,6 +30,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+//4.20*: bloglist expansion, step8
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
 
@@ -51,5 +52,8 @@ const tokenValidator = (request, response, next) => {
   }
   next()
 }
+
+//4.22*: bloglist expansion, step10
+
 
 module.exports = { errorHandler, tokenExtractor, tokenValidator ,requestLogger ,unknownEndpoint }

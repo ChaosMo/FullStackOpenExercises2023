@@ -32,6 +32,7 @@ const App = () => {
     setAllBlogs(blogs)
   }
 
+  //5.2: bloglist frontend, step2
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -61,6 +62,7 @@ const App = () => {
     setUser(null)
   }
 
+  //5.3: bloglist frontend, step3
   const createBlog = async (BlogToAdd) => {
     try {
       blogFormRef.current.toggleVisibility()
@@ -133,6 +135,7 @@ const App = () => {
     }
   }
 
+  //5.9: Blog list frontend, step9
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (

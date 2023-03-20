@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+//5.6 Blog list frontend, step6
 const BlogForm = ({ createBlog }) => {
   const [newTitle, setNewTitle ] = useState('')
   const [newAuthor, setNewAuthor ] = useState('')
