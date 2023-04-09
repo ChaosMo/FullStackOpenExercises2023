@@ -11,8 +11,9 @@ const reducer = combineReducers({
     notification: notificationReducer,
     anecdotes: anecdoteReducer,
     filter: filterReducer
-  })
+})
 
+//6.16 Anecdotes and the backend, step3
 const store = createStore(
     reducer,
     composeWithDevTools(
